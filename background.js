@@ -9,7 +9,7 @@ function handleRemoved(tabId, removeInfo) {
     console.log("Window ID: " + removeInfo.windowId);
     console.log("Window is closing: " + removeInfo.isWindowClosing);
 
-    interference.requests.tabs[tabId] = undefined;
+    delete interference.requests.tabs[tabId];
 }
 
 browser.tabs.onRemoved.addListener(handleRemoved);
@@ -21,28 +21,21 @@ browser.tabs.onRemoved.addListener(handleRemoved);
 var interference_url_pattern = "<all_urls>";
 
 function logURL(requestDetails) {
-    interference_log("In onBeforeRequest callback");
 
     //TODO: block request
     //TODO: display headers & body in the popoup, editable
 
     //TODO: for now logging only
-
-    // TODO: should work but doesn't? if(interference.requests.tabs.indexOf(requestDetails.tabId) != -1) {
-    console.log(interference.requests.tabs.indexOf(requestDetails.tabId));
-    if(Array.isArray(interference.requests.tabs[requestDetails.tabId])) {
+    if(requestDetails.tabId in interference.requests.tabs) {
         interference.requests.tabs[requestDetails.tabId].push(requestDetails.url);
-        interference_log("In onBeforeRequest callback - request capture enabled");
+        console.log(requestDetails.requestDetails);
     }
-}
-
-function interference_log(message) {
-    console.log("INTERFERENCE: " + message);
 }
 
 browser.webRequest.onBeforeRequest.addListener(
     logURL,
-    {urls: [interference_url_pattern]}
+    {urls: [interference_url_pattern]},
+    ["blocking", "requestBody"]
 );
 
 function handleClick() {
