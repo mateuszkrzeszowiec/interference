@@ -2,18 +2,27 @@
  * Created by mat on 12/5/16.
  */
 
+// FF: browser, Chrome: chrome
+var browser = browser || chrome;
+
+// this will let you log in browser (invisible) dev page, great for development in chrome
+var console = browser.extension.getBackgroundPage().console;
 
 // copying from background.js into popup
 var interference = browser.extension.getBackgroundPage().interference;
 
 function load() {
-    document.getElementById("interference-toggle").addEventListener('click', function (event) {
-        var querying = browser.tabs.query({currentWindow: true, active: true});
-        querying.then(toggleRequestCapture, onError);
+    document.querySelector("#interference-toggle button").addEventListener('click', function (event) {
+        // TODO: commented out works in FF, no promise in chrome yet?
+        // var querying = browser.tabs.query({currentWindow: true, active: true});
+        // querying.then(toggleRequestCapture, onError);
+        var querying = browser.tabs.query({currentWindow: true, active: true}, toggleRequestCapture);
     });
+    // TODO: commented out works in FF, no promise in chrome yet?
+    // var querying = browser.tabs.query({currentWindow: true, active: true});
+    // querying.then(initializeBrowserAction, onError);
+    var querying = browser.tabs.query({currentWindow: true, active: true}, initializeBrowserAction);
 
-    var querying = browser.tabs.query({currentWindow: true, active: true});
-    querying.then(initializeBrowserAction, onError);
 };
 
 window.onload = load;
@@ -41,6 +50,7 @@ function initializeBrowserAction(tabs) {
 }
 
 function toggleRequestCapture(tabs) {
+    console.log("In browser_action.js, toggleRequestCapture")
     var tab = tabs[0];
     if (tab) { // Sanity check
         var button = document.querySelector("#interference-toggle button");

@@ -4,16 +4,20 @@
   "version": "0.1",
   "description": "Tool that (will) help you with capturing and modifying requests on the fly.",
   "permissions": [
+    "background",
     "webRequest",
     "activeTab",
     "contextMenus",
+    "tabs",
     "webRequestBlocking",
-    "storage"
+    "storage",
+    "<all_urls>"
   ],
   "background": {
     "scripts": [
       "background.js"
-    ]
+    ],
+    "persistent": true
   },
   "browser_action": {
     "default_title": "Interference configuration",

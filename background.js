@@ -1,3 +1,10 @@
+// FF: browser, Chrome: chrome
+var browser = browser || chrome;
+
+
+console.log("in background.js, browser: " + browser);
+
+
 var interference = interference || {};
 
 interference.requests = {
@@ -26,16 +33,19 @@ function logURL(requestDetails) {
     //TODO: display headers & body in the popoup, editable
 
     //TODO: for now logging only
-    if(requestDetails.tabId in interference.requests.tabs) {
+    if (requestDetails.tabId in interference.requests.tabs) {
         interference.requests.tabs[requestDetails.tabId].push(requestDetails.url);
-        console.log(requestDetails.requestDetails);
+        console.log(requestDetails);
     }
 }
 
 browser.webRequest.onBeforeRequest.addListener(
     logURL,
     {urls: [interference_url_pattern]},
-    ["blocking", "requestBody"]
+    [
+        "blocking"
+        // "requestBody" - not compatible with current release FF
+    ]
 );
 
 function handleClick() {
