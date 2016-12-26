@@ -1,2 +1,4 @@
 # interference
-Attempt to write tamper data for FF using WebExtension API.
+Attempt to write cross-browser tamper data using WebExtension API.
+
+Early stage - for now displays URLs in browser action popup
