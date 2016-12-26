@@ -44,7 +44,6 @@ function initializeBrowserAction(tabs) {
             button.classList.remove('btn-success');
             button.classList.add('btn-info');
         }
-        showCapturedRequests(tab);
     }
 
 }
@@ -67,30 +66,6 @@ function toggleRequestCapture(tabs) {
             console.log("Request logging enabled for tab: " + tab.id);
             interference.requests.tabs[tab.id] = [];
         }
-    }
-}
-
-function showCapturedRequests(tab) {
-    var container = document.querySelector("#requests-table tbody");
-
-    while (container.firstChild) {
-        container.removeChild(container.firstChild);
-    }
-
-    var idx = 1;
-    for (var index in interference.requests.tabs[tab.id]) {
-        var row = document.createElement(('tr'));
-
-        var idxTd = document.createElement('td');
-        idxTd.appendChild(document.createTextNode(idx++));
-
-        var requestTd = document.createElement('td');
-        requestTd.appendChild(document.createTextNode(interference.requests.tabs[tab.id][index]));
-
-        row.appendChild(idxTd);
-        row.appendChild(requestTd);
-
-        container.appendChild(row);
     }
 }
 
