@@ -16,8 +16,10 @@
 
 </head>
 <body>
-<div>
-
+<div class="container" role="main">
+    <div class="page-header">
+        <h1>Interference</h1>
+    </div>
     <!-- Nav tabs -->
     <ul id="browser-tabs" class="nav nav-tabs" role="tablist">
     </ul>
@@ -25,7 +27,6 @@
     <!-- Tab panes -->
     <div id="browser-tabs-panels" class="tab-content">
     </div>
-
 </div>
 
 <script
@@ -38,6 +39,7 @@
 
 <script src="lib/datatables/js/jquery.dataTables.min.js"></script>
 <script src="lib/datatables/js/dataTables.bootstrap.min.js"></script>
+<script src="lib/datatables/js/ellipsis.js"></script>
 
 <script src="lib/mustache-2.3.0-min.js"></script>
 
@@ -47,7 +49,7 @@
     {{#requests}}
     <tr>
         <td>{{requestId}}</td>
-        <td style="word-break:break-all;">{{url}}</td>
+        <td>{{url}}</td>
         <td>{{method}}</td>
         <td>{{frameId}}</td>
         <td>{{parentFrameId}}</td>

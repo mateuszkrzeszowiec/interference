@@ -1,7 +1,15 @@
 // FF: browser, Chrome: chrome
 var browser = browser || chrome;
 
-var interference = interference || {};
+var interference = {
+    MSG_TAB_ADDED: 0,
+    MSG_TAB_REMOVED: 1,
+    MSG_NEW_REQUEST: 2,
+    MSG_NEW_REQUEST_BLOCKED: 3,
+
+
+    tabId: undefined
+}
 
 interference.requests = {
     tabs: []
@@ -12,6 +20,9 @@ function handleRemoved(tabId, removeInfo) {
     console.log("Window ID: " + removeInfo.windowId);
     console.log("Window is closing: " + removeInfo.isWindowClosing);
 
+    if (interference.tabId == tabId) {
+        interference.tabId = undefined;
+    }
     delete interference.requests.tabs[tabId];
 }
 
@@ -30,9 +41,22 @@ function logURL(requestDetails) {
 
     if (requestDetails.tabId in interference.requests.tabs) {
         interference.requests.tabs[requestDetails.tabId].push(requestDetails);
+
+        if (interference.tabId != undefined) {
+            console.log(interference.tabId);
+            browser.tabs.sendMessage(
+                interference.tabId,
+                {
+                    type: interference.MSG_NEW_REQUEST,
+                    tabId: requestDetails.tabId
+                },
+                function (response) {
+                    // TODO: not really expecting any message back, is it really required?
+                    console.log(response);
+                });
+        }
     }
 }
-
 
 // "requestBody"  - not compatible with current release FF
 browser.webRequest.onBeforeRequest.addListener(
@@ -42,8 +66,3 @@ browser.webRequest.onBeforeRequest.addListener(
     //    "blocking"
     //]
 );
-
-function handleClick() {
-    browser.runtime.openOptionsPage();
-}
-

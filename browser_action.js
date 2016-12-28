@@ -23,6 +23,12 @@ function load() {
     // querying.then(initializeBrowserAction, onError);
     var querying = browser.tabs.query({currentWindow: true, active: true}, initializeBrowserAction);
 
+
+    document.querySelector("#interference-options button").addEventListener('click', function (event) {
+        browser.runtime.openOptionsPage();
+    });
+
+
 };
 
 window.onload = load;
@@ -70,7 +76,8 @@ function toggleRequestCapture(tabs) {
 }
 
 function onCreated(tab) {
-    console.log('Created new tab: ${tab.id}');
+    console.log('Created new tab: ' + tab.id);
+    interference.tabId = tab.id;
 }
 
 function onError(error) {
@@ -78,8 +85,10 @@ function onError(error) {
 }
 
 document.querySelector('#interference-main button').addEventListener('click', function() {
-    var creating = browser.tabs.create({
+    // commented out stuff not working in chrome
+    // var creating =
+        browser.tabs.create({
         url:"interference.html"
-    });
-    creating.then(onCreated, onError);
+    }, onCreated);
+    // creating.then(onCreated, onError);
 });
