@@ -1,3 +1,4 @@
+"use strict";
 // FF: browser, Chrome: chrome
 var browser = browser || chrome;
 
@@ -80,7 +81,6 @@ $(function () {
 });
 
 browser.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    console.log('message recieved: ' + request);
     switch (request.type) {
         case interference.MSG_TAB_ADDED:
             //TODO: add tab and panel
@@ -91,12 +91,19 @@ browser.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         case interference.MSG_NEW_REQUEST:
             //TODO: add request to the right databales, "blink" the nav? slack-like?
             var table = $('#tab' + request.tabId + ' table').DataTable();
-            console.log('Should add rows, count in datatable: ' + table.rows().count() + ' vs ' + interference.requests.tabs[request.tabId]);
-            brake;
+
+            var currentLenghtInDatatable = table.rows().count();
+            var currentLengthCaptured = interference.requests.tabs[request.tabId].length;
+
+            if(currentLengthCaptured - currentLenghtInDatatable > 0) {
+                table.rows.add(interference.requests.tabs[request.tabId].slice(currentLenghtInDatatable, currentLengthCaptured)).draw();
+            }
+
+            break;
         case interference.MSG_NEW_REQUEST_BLOCKED:
             //sendResponse({body: prompt(request.url, request.url)});
             //TODO: display tamper dialog, send back the response
-            brake;
+            break;
         default:
             alert('Unsupported message type');
     }
