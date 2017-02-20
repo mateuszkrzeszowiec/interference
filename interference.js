@@ -101,7 +101,9 @@ browser.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
             break;
         case interference.MSG_NEW_REQUEST_BLOCKED:
-            //sendResponse({body: prompt(request.url, request.url)});
+            console.log('In interference.js - tab: ' + request.tabId + ' url: ' +request.url);
+            //sendResponse({'url': request.url});
+            sendResponse({'url': prompt(request.url, 'https://www.owasp.org')});
             //TODO: display tamper dialog, send back the response
             break;
         default:

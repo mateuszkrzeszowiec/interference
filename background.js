@@ -31,20 +31,32 @@ function logURL(requestDetails) {
 
     //TODO: block request
     //TODO: display headers & body in the popoup, editable
+    var messageResponse;
 
+    if(!requestDetails.url.startsWith('https://www.owasp.org'))
     if (requestDetails.tabId in interference.requests.tabs) {
-        interference.requests.tabs[requestDetails.tabId].push(requestDetails);
+        var idx = interference.requests.tabs[requestDetails.tabId].push(requestDetails);
+        console.log('In background.js - tab: ' + requestDetails.tabId + ' url: ' + requestDetails.url);
         browser.runtime.sendMessage(
-            {'type': interference.MSG_NEW_REQUEST, 'tabId': requestDetails.tabId}
-        );
+            // consider removing tabId from here, affects MSG_NEW_REQUEST implementation!
+
+            {'type': interference.MSG_NEW_REQUEST_BLOCKED, 'tabId': requestDetails.tabId, 'url': requestDetails.url},
+            function (response) {
+                console.log('Redirecting url: ' + response.url);
+                messageResponse = response.url;
+            });
+        console.log('In background.js, returned from sendMessage ' + messageResponse);
+        return {
+            redirectUrl: messageResponse
+        };
     }
 }
 
 // "requestBody"  - not compatible with current release FF
 browser.webRequest.onBeforeRequest.addListener(
     logURL,
-    {urls: [interference_url_pattern]}
-    //[
-    //    "blocking"
-    //]
+    {urls: [interference_url_pattern]},
+    [
+        "blocking"
+    ]
 );
